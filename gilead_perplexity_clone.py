@@ -75,14 +75,14 @@ if send_button==True:
         [query 1,query 2,query 3]''')
     ])
 
-    openai_llm=ChatOpenAI(model='gpt-4o-mini')
-    #groq_llm=ChatGroq(model='llama-3.3-70b-versatile',temperature=0)
+    #openai_llm=ChatOpenAI(model='gpt-4o-mini')
+    groq_llm=ChatGroq(model='llama-3.3-70b-versatile',temperature=0)
 
-    #groq_llm_str=groq_llm.with_structured_output(list_output)
-    openai_llm_str=openai_llm.with_structured_output(list_output)
+    groq_llm_str=groq_llm.with_structured_output(list_output)
+    #openai_llm_str=openai_llm.with_structured_output(list_output)
 
 
-    text_to_searchquery_chain=text_to_searchquery_prompt|openai_llm_str|(lambda x:x.result)|(lambda x:[{'question':i} for i in x])
+    text_to_searchquery_chain=text_to_searchquery_prompt|groq_llm_str|(lambda x:x.result)|(lambda x:[{'question':i} for i in x])
 
     web_page_qa_prompt1=ChatPromptTemplate.from_messages([
         ('system',"""{text} 
@@ -164,7 +164,7 @@ if send_button==True:
         ('system','''Classify the provided question as either 'Yes' or 'No'. Respond 'Yes' if the question is related to healthcare and 'No' if it is unrelated to healthcare.\n{format_instructions}\nQuestion:{question}''')
     ])
 
-    prompt_classifier_chain=(prompt_classifier_prompt|openai_llm|json_parser|(lambda x:x['response']))
+    prompt_classifier_chain=(prompt_classifier_prompt|groq_llm|json_parser|(lambda x:x['response']))
 
     prompt_classifier_chain_response=prompt_classifier_chain.invoke({'question':user_input,'format_instructions':json_parser.get_format_instructions()})
 
