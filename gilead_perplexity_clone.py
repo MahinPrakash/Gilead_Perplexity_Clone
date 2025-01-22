@@ -150,7 +150,7 @@ if send_button==True:
     final_research_report_chain=(
         RunnablePassthrough.assign(research_summary=complete_summarizer_chain)
         |final_research_prompt
-        |openai_llm
+        |groq_llm
         |StrOutputParser())
    
     st.header('Response:-')
